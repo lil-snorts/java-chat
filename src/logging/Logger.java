@@ -2,17 +2,25 @@ package logging;
 
 import strings.Strings;
 
+import java.sql.Time;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
 public class Logger {
 
     private static final char DOUBLE_QUOTE = '"';
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm ss");
 
     protected enum Level {
         DEBUG, INFO, WARN, ERROR
     }
 
     private final String name;
+
+    public <T> Logger(Class<T> clazz) {
+        this.name = Strings.requireNotBlank(clazz.getCanonicalName());
+    }
 
     public Logger(String name) {
         this.name = Strings.requireNotBlank(name);
@@ -37,6 +45,7 @@ public class Logger {
     protected void log(Loggable loggableMessage, Level level, LogPair... varargs) {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
+        appendKeyVal(sb, "time", LocalDateTime.now().format(TIME_FORMATTER));
         appendKeyVal(sb, "level", level.name());
         appendKeyVal(sb, "logger", this.name);
         appendKeyVal(sb, "thread", Thread.currentThread().getName());

@@ -1,5 +1,7 @@
 package chat;
 
+import logging.Logger;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,6 +12,7 @@ import java.util.Objects;
 class TcpHandler {
     private static final boolean AUTO_FLUSH_ENABLED = true;
     private final Socket socket;
+    private final Logger logger = new Logger(TcpHandler.class);
 
     TcpHandler(Socket socket) {
         this.socket = socket;
@@ -30,6 +33,7 @@ class TcpHandler {
         }
 
         Objects.requireNonNull(firstLine);
+        logger.debug("firstline=" + firstLine);
         if (firstLine.contains("hello")) {
             out.println(":0 hello young man");
         } else {
